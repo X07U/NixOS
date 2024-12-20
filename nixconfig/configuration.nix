@@ -8,7 +8,6 @@
   ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true; 
-  
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
 # these 3 are the easiest way to setup qt themes globally, the config options are horrible. 
@@ -32,8 +31,7 @@
   security.pam.services.greetd.enableGnomeKeyring = true;
   security.pam.services.login.enableGnomeKeyring = true;
   services.gnome.gnome-keyring.enable = true;
-  
-  # services.passSecretService..enable = true;
+  services.passSecretService.enable = true;
   system.stateVersion = "24.05"; 
   powerManagement.enable = true;
   services.thermald.enable = true;
@@ -43,20 +41,6 @@
 
 # ✨ SYSTEMD ✨
 
-  systemd = {
-    services."garbage".script = ''
-      for profile in /nix/var/nix/profiles/system $HOME/.local/state/nix/profiles/profile $HOME/.local/state/nix/profiles/home-manager; do
-        nix-env --delete-generations +5 -p $profile;
-      done
-    '';
-    timers."garbage" = {
-      wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnCalendar = "weekly";
-        Persistent = true;
-      };
-    };
-  };
 
 # ✨ GRUB ✨
 
@@ -107,12 +91,24 @@
 #this is only needed to fix invisible Xcursor in some Xwayland apps via "xsetroot -cursor_name left_ptr" - see hyprland config
     xorg.xsetroot
     ffmpeg
-    superfile
     fzf
     xdg-utils
-    github-desktop
     libsecret
+    # jellyfin
+    # jellyfin-web
+    # jellyfin-ffmpeg
   ];
+
+  # services.jellyfin = {
+  #   enable = true;
+  #   openFirewall = true;
+  # };
+
+  # services.plex = {
+  #   enable = true;
+  #   openFirewall = true;
+  #   user = "xozu";
+  # };
   
   fonts.packages = with pkgs; [
     nerd-fonts.iosevka
@@ -280,5 +276,13 @@ services.mpd = {
   }
 '';
 	};
+
+  programs.virt-manager.enable = true;
+
+  users.groups.libvirtd.members = ["xozu"];
+
+  virtualisation.libvirtd.enable = true;
+
+  virtualisation.spiceUSBRedirection.enable = true;
 
 }

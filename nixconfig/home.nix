@@ -26,11 +26,8 @@
 # ✨ VARIABLES ✨
 
 		env = [
-# I think these are better via home.pointerCursor on NixOS
-      # "XCURSOR_THEME,catppuccin-mocha-mauve-cursors"
-      # "XCURSOR_SIZE,16"
       "HYPRCURSOR_THEME,catppuccin-mocha-mauve-cursors"
-      "HYPRCURSOR_SIZE,16"
+      "HYPRCURSOR_SIZE,24"
 			"HYPRSHOT_DIR,$HOME/Pictures/Screenshots"
     ];
 
@@ -216,12 +213,12 @@
 # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 # This is actually set also in Stylix, but here I also have the x11, so I'm just gonna keep both, they don't conflict or anything
-	home.pointerCursor = {
-		gtk.enable = true;
-		x11.enable = true;
-		name = "catppuccin-mocha-mauve-cursors";
-		size = 16;
-	};
+	# home.pointerCursor = {
+	# 	gtk.enable = true;
+	# 	x11.enable = true;
+	# 	name = "catppuccin-mocha-mauve-cursors";
+	# 	size = 16;
+	# };
  
 # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 # ✨			✨ WAYBAR ✨			✨
@@ -495,11 +492,13 @@
 			flake = "cd $HOME/nixconfig && hx flake.nix";
 			hardware = "cd $HOME/nixconfig && hx hardware-configuration.nix";
 			gitnix = "git --git-dir=$HOME/.GitNix --work-tree=$HOME";
+			"gitnix-update" = "git --git-dir=$HOME/.GitNix --work-tree=$HOME add --update && dotfiles commit -m 'Update modified files' && dotfiles push";
 			gitrollback = "git checkout HEAD^1";
 			unzip = "file-roller --extract-here";
 			error = "journalctl -u";
 			convert = "magick";
 			tree = "nix shell nixpkgs#nix-tree nixpkgs#ripgrep & nix-store --gc --print-roots | rg -v '/proc/' | rg -Po '(?<= -> ).*' | xargs -o nix-tree";
+			"?" = "compgen -c | grep";
 		};
 		initExtra = ''
       cutvideo() {
@@ -823,9 +822,6 @@
 
   gtk = {
     enable = true;
-# Set via home.pointerCursor above
-    # cursorTheme.name = "catppuccin-mocha-mauve-cursors";
-    # cursorTheme.size = 16;
 		iconTheme.package = pkgs.catppuccin-papirus-folders.override {
 	    flavor = "mocha";
 	    accent = "lavender";
@@ -1126,5 +1122,12 @@
 	programs.btop.enable = true;
 
 	programs.zoxide.enable = true;
+
+	dconf.settings = {
+	  "org/virt-manager/virt-manager/connections" = {
+	    autoconnect = ["qemu:///system"];
+	    uris = ["qemu:///system"];
+	  };
+	};
 	
 }

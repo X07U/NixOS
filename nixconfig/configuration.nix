@@ -46,7 +46,6 @@
 # ✨ GRUB ✨
 
   boot.loader = {
-    efi.efiSysMountPoint = "/boot/efi";
     systemd-boot.enable = false;
     efi.canTouchEfiVariables = true;
     timeout = 1;

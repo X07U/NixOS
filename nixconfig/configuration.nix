@@ -5,6 +5,7 @@
   imports = [ 
       ./hardware-configuration.nix
       inputs.home-manager.nixosModules.default
+      ./disko.nix
   ];
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true; 

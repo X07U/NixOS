@@ -195,6 +195,7 @@
 
   users.users.xozu = {
     isNormalUser = true;
+    initialPassword = "123";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
   };

@@ -2,7 +2,7 @@
   disko.devices = {
     disk.main = {
       type = "disk";
-      device = "nvme0n1";
+      device = "/dev/nvme0n1";
       content = {
         type = "gpt";
         partitions = {
@@ -20,8 +20,7 @@
           btrfs = {
             size = "100%";
             content = {
-              type = "filesystem";
-              format = "btrfs";
+              type = "btrfs";
               extraArgs = [ "-f" ];
               subvolumes = {
                 "/persist" = {

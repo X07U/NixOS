@@ -10,6 +10,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    impermanence = {
+      url = "github:nix-community/impermanence";
+    };
+
     textfox = {
       url = "github:adriankarlen/textfox";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -27,6 +36,8 @@
         ./configuration.nix
       	stylix.nixosModules.stylix
         inputs.home-manager.nixosModules.default
+        inputs.disko.nixosModules.default
+        inputs.impermanence.nixosModules.impermanence
       ];
     };
   };

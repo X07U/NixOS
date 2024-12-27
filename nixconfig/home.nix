@@ -499,6 +499,7 @@
 			convert = "magick";
 			tree = "nix shell nixpkgs#nix-tree nixpkgs#ripgrep & nix-store --gc --print-roots | rg -v '/proc/' | rg -Po '(?<= -> ).*' | xargs -o nix-tree";
 			"?" = "compgen -c | grep";
+			keep = "sudo fd --one-file-system --base-directory / --type f --hidden --exclude '{tmp,etc/passwd,root/.cache}'";
 		};
 		initExtra = ''
       cutvideo() {

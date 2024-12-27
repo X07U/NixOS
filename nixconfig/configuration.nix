@@ -98,6 +98,7 @@ efi.efiSysMountPoint = "/boot";
     # jellyfin
     # jellyfin-web
     # jellyfin-ffmpeg
+fd
   ];
 
   # services.jellyfin = {

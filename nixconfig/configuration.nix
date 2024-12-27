@@ -284,8 +284,38 @@ services.mpd = {
   virtualisation.libvirtd.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
 
+fileSystems."/" = {
+    device = "none";
+    fsType = "tmpfs";
+    options = [ "defaults" "size=25%" "mode=755" ];
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-partlabel/disk-main-boot";
+    fsType = "vfat";
+    options = [ "fmask=0077" "dmask=0077" ];
+  };
+
+  fileSystems."/home" = {
+    device = "/dev/disk/by-partlabel/disk-main-btrfs";
+    fsType = "btrfs";
+    options = [ "subvol=home" "noatime" ];
+  };
+
+  fileSystems."/nix" = {
+    device = "/dev/disk/by-partlabel/disk-main-btrfs";
+    fsType = "btrfs";
+    options = [ "subvol=nix" "noatime" ];
+  };
+
+  fileSystems."/persist" = {
+    neededForBoot = true;
+    device = "/dev/disk/by-partlabel/disk-main-btrfs";
+    fsType = "btrfs";
+    options = [ "subvol=persist" "noatime" ];
+  };
+
 zramSwap.enable = true;
-fileSystems."/persist".neededForBoot = true;
   environment.persistence."/persist" = {
     hideMounts = true;
     directories = [

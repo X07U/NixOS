@@ -194,13 +194,20 @@ fd
 # ✨			✨ USER ✨			✨
 # ┗━━━━━━━━━━━━━━━━━━━━━━━━┛ 
 
-users.mutableUsers = false;
-  users.users.xozu = {
-    isNormalUser = true;
-    hashedPasswordFile = "/persist/xozupass";
-    extraGroups = [ "networkmanager" "wheel" ];
-    shell = pkgs.zsh;
+users = {
+  mutableUsers = false;
+  users = {
+    root = {
+	hashedPasswordFile = "/persist/rootpass";
+    };
+    xozu = {
+    	isNormalUser = true;
+    	hashedPasswordFile = "/persist/xozupass";
+    	extraGroups = [ "networkmanager" "wheel" ];
+    	shell = pkgs.zsh;
+    };
   };
+};
   environment.pathsToLink = [ "/share/zsh" ];
 
  # ✨ HOME MANAGER ✨ 

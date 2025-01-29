@@ -36,17 +36,33 @@
   system.stateVersion = "24.05"; 
   powerManagement.enable = true;
   services.thermald.enable = true;
-  nix.optimise.automatic = true;
   security.polkit.enable = true;
   services.thinkfan.enable = true;
 
 # ✨ SYSTEMD ✨
 
+  systemd.timers."nix-store-optimiser" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      Unit = "nix-store-optimiser.service";
+      OnCalendar = "20:40";
+      Persistent = true;
+    };
+  };
+
+  systemd.services."nix-store-optimiser" = {
+    script = ''
+    set -eu
+    ${pkgs.nix}/bin/nix-store --optimise
+  '';
+  };
+
+  # systemd.timers."fstrim".timerConfig.Persistent = true;
 
 # ✨ GRUB ✨
 
   boot.loader = {
-efi.efiSysMountPoint = "/boot";
+    efi.efiSysMountPoint = "/boot";
     systemd-boot.enable = false;
     efi.canTouchEfiVariables = true;
     timeout = 1;
@@ -87,7 +103,7 @@ efi.efiSysMountPoint = "/boot";
       accent = "mauve";
       variant = "mocha";
     })
-    inkscape
+    gimp
     onlyoffice-desktopeditors
 #this is only needed to fix invisible Xcursor in some Xwayland apps via "xsetroot -cursor_name left_ptr" - see hyprland config
     xorg.xsetroot
@@ -98,7 +114,7 @@ efi.efiSysMountPoint = "/boot";
     # jellyfin
     # jellyfin-web
     # jellyfin-ffmpeg
-fd
+    fd
   ];
 
   # services.jellyfin = {
@@ -180,7 +196,7 @@ fd
 # ✨			✨ SOUND ✨			✨
 # ┗━━━━━━━━━━━━━━━━━━━━━━━━┛ 
 
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -194,20 +210,20 @@ fd
 # ✨			✨ USER ✨			✨
 # ┗━━━━━━━━━━━━━━━━━━━━━━━━┛ 
 
-users = {
-  mutableUsers = false;
   users = {
-    root = {
-	hashedPasswordFile = "/persist/rootpass";
-    };
-    xozu = {
-    	isNormalUser = true;
-    	hashedPasswordFile = "/persist/xozupass";
-    	extraGroups = [ "networkmanager" "wheel" ];
-    	shell = pkgs.zsh;
+    mutableUsers = false;
+    users = {
+      root = {
+      	hashedPasswordFile = "/persist/rootpass";
+      };
+      xozu = {
+      	isNormalUser = true;
+      	hashedPasswordFile = "/persist/xozupass";
+      	extraGroups = [ "networkmanager" "wheel" ];
+      	shell = pkgs.zsh;
+      };
     };
   };
-};
   environment.pathsToLink = [ "/share/zsh" ];
 
  # ✨ HOME MANAGER ✨ 
@@ -273,19 +289,19 @@ users = {
     plugins = with pkgs.xfce; [ thunar-archive-plugin thunar-volman ];
   };
 
-services.mpd = {
-		enable = true;
-    user = "xozu";
-    musicDirectory = "/home/xozu/Music";
-    extraConfig = ''
-  audio_output {
-    type "alsa"
-    name "My ALSA"
-    mixer_type		"hardware"
-    mixer_device	"default"
-    mixer_control	"PCM"
-  }
-'';
+  services.mpd = {
+  		enable = true;
+      user = "xozu";
+      musicDirectory = "/home/xozu/Music";
+      extraConfig = ''
+    audio_output {
+      type "alsa"
+      name "My ALSA"
+      mixer_type		"hardware"
+      mixer_device	"default"
+      mixer_control	"PCM"
+    }
+  '';
 	};
 
   programs.virt-manager.enable = true;
@@ -293,7 +309,7 @@ services.mpd = {
   virtualisation.libvirtd.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
 
-boot.initrd.postDeviceCommands = lib.mkAfter ''
+  boot.initrd.postDeviceCommands = lib.mkAfter ''
     mkdir /btrfs_tmp
     mount /dev/root_vg/root /btrfs_tmp
     if [[ -e /btrfs_tmp/root ]]; then
@@ -324,19 +340,25 @@ zramSwap.enable = true;
     hideMounts = true;
     directories = [
       "/etc/nixos"
+      "/var/db/sudo"
       "/var/log"
       "/var/lib/bluetooth"
+      "/var/lib/flatpak"
       "/var/lib/nixos"
-      "/var/lib/systemd/coredump"
+      "/var/lib/systemd"
       "/etc/NetworkManager/system-connections"
       { directory = "/var/lib/colord"; user = "colord"; group = "colord"; mode = "u=rwx,g=rx,o="; }
     ];
     files = [
       "/etc/machine-id"
+      "/var/cache/tuigreet/lastuser"
       { file = "/var/keys/secret_file"; parentDirectory = { mode = "u=rwx,g=,o="; }; }
     ];
    users.xozu = {
       directories = [
+        ".cache/flatpak"
+        ".config/Thunar"
+        "nixconfig"
         "Downloads"
         "Music"
         "Pictures"
@@ -347,9 +369,19 @@ zramSwap.enable = true;
         { directory = ".nixops"; mode = "0700"; }
         { directory = ".local/share/keyrings"; mode = "0700"; }
         ".local/share/direnv"
+        ".local/share/flatpak"
+        ".local/share/zoxide"
+        ".local/share/Trash"
+        ".local/share/gvfs-metadata"
+        ".var"
+        ".config/dconf"
+        ".config/xfce4"
+        ".config/gtk-3.0"
       ];
       files = [
         ".screenrc"
+        ".zsh_history"
+        ".local/share/applications/thunarHX.desktop"
       ];
     };
   };

@@ -19,16 +19,16 @@
       url = "github:nix-community/impermanence";
     };
 
-    textfox = {
-      url = "github:adriankarlen/textfox";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # textfox = {
+    #   url = "github:adriankarlen/textfox";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
    
     stylix.url = "github:danth/stylix/5ab1207b2fdeb5a022f2dd7cccf6be760f1b150f";
 
   };
 
-  outputs = { self, nixpkgs, home-manager, textfox, stylix, ... } @ inputs: {
+  outputs = { self, nixpkgs, home-manager, stylix, ... } @ inputs: {
     nixosConfigurations.default = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
 

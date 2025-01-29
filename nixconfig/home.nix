@@ -2,7 +2,7 @@
 	home.username = "xozu";
   home.homeDirectory = "/home/xozu";
   home.stateVersion = "24.05"; 
-  imports = [ inputs.textfox.homeManagerModules.default ];
+  # imports = [ inputs.textfox.homeManagerModules.default ];
 
 # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 # ✨			✨ HYPRLAND SETUP ✨			✨
@@ -462,10 +462,10 @@
 # ✨			✨ TEXTFOX ✨			✨
 # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-  textfox = {
-    enable = true;
-    profile = "xozu"; 
-  };
+  # textfox = {
+  #   enable = true;
+  #   profile = "xozu"; 
+  # };
   
 # ┏━━━━━━━━━━━━━━━━━━━━━━┓
 # ✨			✨ ZSH ✨			✨
@@ -476,6 +476,9 @@
 		enableCompletion = true;
 		autosuggestion.enable = true;
 		syntaxHighlighting.enable = true;
+		sessionVariables = {
+			LC_ALL = "en_US.UTF-8";
+		};
 		shellAliases = {
 			ls = "eza";
 			lst = "eza -T";
@@ -499,7 +502,7 @@
 			convert = "magick";
 			tree = "nix shell nixpkgs#nix-tree nixpkgs#ripgrep & nix-store --gc --print-roots | rg -v '/proc/' | rg -Po '(?<= -> ).*' | xargs -o nix-tree";
 			"?" = "compgen -c | grep";
-			keep = "sudo fd --one-file-system --base-directory / --type f --hidden --exclude '{tmp,etc/passwd,root/.cache}'";
+			keep = "sudo fd --one-file-system --base-directory / --type f --hidden --exclude '{tmp,etc/passwd,root/.cache,home/xozu/.mozilla,var/lib/flatpak,home/xozu/.cache,home/xozu/.config/FreeTube,var/lib/NetworkManager,var/lib/libvirt,home/xozu/.var}'";
 		};
 		initExtra = ''
       cutvideo() {
@@ -665,7 +668,8 @@
 		enable = true;
 		enableZshIntegration = true;
 		settings = {
-			format = "[](#a3aed2)[](bg:#a3aed2 fg:#090c0c)[](bg:#9f76f0 fg:#a3aed2)$directory[](fg:#9f76f0 bg:#394260)$git_branch$git_status[](fg:#394260 bg:#212736)$nodejs$rust$golang$php[](fg:#212736 bg:#1d2230)$time[](fg:#1d2230)$character";
+			format = "[🧬]()[](fg:#1C1A2A bg:#9f76f0)$directory[](fg:#9f76f0 bg:#212736)$nodejs$rust$golang$php[](fg:#212736)$character";
+			# format = "[](#a3aed2)[❄️](bg:#a3aed2 fg:#090c0c)[](bg:#9f76f0 fg:#a3aed2)$directory[](fg:#9f76f0 bg:#394260)$git_branch$git_status[](fg:#394260 bg:#212736)$nodejs$rust$golang$php[](fg:#212736 bg:#1d2230)$time[](fg:#1d2230)$character";
 			directory = {
 				style = "fg:#e3e5e5 bg:#9f76f0";
 				format = "[ $path ]($style)";
@@ -680,6 +684,10 @@
 				"Pictures" = " ";
 			};
 
+			python = {
+				disabled = true;
+			};
+
 			git_branch = {
 				symbol = "";
 				style = "bg:#394260";
@@ -687,6 +695,7 @@
 			};
 
 			git_status = {
+				disabled = true;
 				style = "bg:#394260";
 				format = "[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)";
 			};
@@ -716,7 +725,7 @@
 			};
 
 			time = {
-				disabled = false;
+				disabled = true;
 				time_format = "%R";
 				style = "bg:#1d2230";
 				format = "[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)";
